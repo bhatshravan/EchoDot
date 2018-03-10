@@ -311,6 +311,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //Git hub integration test
 
     public String getNetworkClass(Context context) {
         TelephonyManager mTelephonyManager = (TelephonyManager)
