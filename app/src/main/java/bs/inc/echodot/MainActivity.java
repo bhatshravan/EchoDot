@@ -311,6 +311,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
     public String getNetworkClass(Context context) {
         TelephonyManager mTelephonyManager = (TelephonyManager)
                 context.getSystemService(Context.TELEPHONY_SERVICE);

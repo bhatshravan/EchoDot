@@ -55,6 +55,12 @@ public class LocationTwo extends AppCompatActivity implements LocationListener {
         });
     }
 
+
+
+
+
+
+
     void getLocation() {
         progressDialog.show();
         try {
