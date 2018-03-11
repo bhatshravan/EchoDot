@@ -366,9 +366,9 @@ public class MainActivity extends AppCompatActivity {
                 messageMap.put("MyLongitude",mlang );
                 messageMap.put("Time", ServerValue.TIMESTAMP);
 
-                DatabaseReference fireDB = FirebaseDatabase.getInstance().getReference().child("Signal");
+                DatabaseReference fireDB = FirebaseDatabase.getInstance().getReference().child("TEST_FOR_SHRAVAN_NEVER_CHECK_OR_REFER_THIS_GET_IT_OR_YOU_WILL_DIE").child("Main");;
                 String push_id= fireDB.push().getKey();
-                //fireDB.child(push_id).setValue(messageMap);
+                fireDB.child(push_id).setValue(messageMap);
                 messageMap.clear();
                 //Toast.makeText(getApplicationContext(),"Updated in firebase",Toast.LENGTH_SHORT).show();
             }

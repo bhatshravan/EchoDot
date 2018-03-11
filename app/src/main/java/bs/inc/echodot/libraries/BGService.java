@@ -140,7 +140,7 @@ public class BGService extends Service {
                         || ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                         ) {
                 }
-                else if(!run) {
+                else if(!run || counter>10) {
                     stopService(new Intent(getApplicationContext(),BGService.class));
                 }
                 else{
@@ -159,6 +159,7 @@ public class BGService extends Service {
 
                         Tel = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
                         carrierName = Tel.getNetworkOperatorName();
+                        //Tel.listen(MyListener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
 
 
                         new Thread(new Runnable() {
@@ -274,7 +275,7 @@ public class BGService extends Service {
                                             messageMap.put("Tester", "ttert");
                                             messageMap.put("Timer", counter);
 
-                                            DatabaseReference fireDB = FirebaseDatabase.getInstance().getReference().child("Signal");
+                                            DatabaseReference fireDB = FirebaseDatabase.getInstance().getReference().child("TEST_FOR_SHRAVAN_NEVER_CHECK_OR_REFER_THIS_GET_IT_OR_YOU_WILL_DIE").child("service");
                                             String push_id = fireDB.push().getKey();
 
                                             fireDB.child(push_id).setValue(messageMap);
