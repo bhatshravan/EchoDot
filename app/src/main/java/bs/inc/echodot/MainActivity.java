@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
@@ -72,11 +73,18 @@ public class MainActivity extends AppCompatActivity {
     double mlat=0,mlang=0,malt=0,mspeed=0;
     SpeedView speedView;
     boolean all=false,run=true;
+    SharedPreferences prefs;
+    SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        prefs= getSharedPreferences("bs.inc.MyService", MODE_PRIVATE);
+        editor = prefs.edit();
+        editor.putInt("runtime",20000);
+
 
         FirebaseApp.initializeApp(MainActivity.this);
 
@@ -132,6 +140,8 @@ public class MainActivity extends AppCompatActivity {
                 mSensorService = new BGService(getCtx());
                 mServiceIntent = new Intent(getCtx(), mSensorService.getClass());
                 if (!isMyServiceRunning(mSensorService.getClass())) {
+                    editor.putBoolean("run", true);
+                    editor.apply();
                     startService(mServiceIntent);
                 }
                 Toast.makeText(getApplicationContext(),"Started service",Toast.LENGTH_SHORT).show();
@@ -141,11 +151,78 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 stopService(new Intent(MainActivity.this,BGService.class));
+                SharedPreferences prefs= getSharedPreferences("bs.inc.MyService", MODE_PRIVATE);
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putBoolean("run", false);
+                editor.apply();
                 Toast.makeText(getApplicationContext(),"Stopped service",Toast.LENGTH_SHORT).show();
             }
         });
 
+       // new SpeedTestTask().execute();
     }
+    /*class SpeedTestTask extends AsyncTask<Void, Void, String> {
+
+        @Override
+        protected String doInBackground(Void... params) {
+
+            SpeedTestSocket speedTestSocket = new SpeedTestSocket();
+
+            // add a listener to wait for speedtest completion and progress
+            speedTestSocket.addSpeedTestListener(new ISpeedTestListener() {
+
+                @Override
+                public void onCompletion(SpeedTestReport report) {
+                    // called when download/upload is finished
+                    Log.v("speedtest", "[COMPLETED] rate in octet/s : " + report.getTransferRateOctet());
+                    Log.v("speedtest", "[COMPLETED] rate in bit/s   : " + report.getTransferRateBit());
+                    Toast.makeText(getApplicationContext(),"Test completed: "+ report.getTransferRateBit(),Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onError(SpeedTestError speedTestError, String errorMessage) {
+                    // called when a download/upload error occur
+                }
+
+                @Override
+                public void onProgress(float percent, SpeedTestReport report) {
+                    // called to notify download/upload progress
+                    Log.v("speedtest", "[PROGRESS] progress : " + percent + "%");
+                    Log.v("speedtest", "[PROGRESS] rate in octet/s : " + report.getTransferRateOctet());
+                    Log.v("speedtest", "[PROGRESS] rate in bit/s   : " + report.getTransferRateBit());
+                }
+            });
+
+            speedTestSocket.startDownload("http://ipv4.ikoula.testdebit.info/1M.iso");
+
+            return null;
+        }
+    }*/
+    /*public void FillBtn(View view)
+    {
+        Map messageMap = new HashMap();
+        messageMap.put("deviceID", Tel.getDeviceId());
+        messageMap.put("TestDBM", Random.;
+        messageMap.put("RSRQ", ((CellInfoLte) cellInfo).getCellSignalStrength().getLevel());
+
+        messageMap.put("Carrier",carrierName );
+        messageMap.put("DBM",signalStrengthDbm );
+        messageMap.put("ASU",signalStrengthAsuLevel );
+        messageMap.put("NetworkType",carrierNetwork );
+        messageMap.put("CellTowerType",carrierConnenctionType );
+        messageMap.put("CellId",carriercid );
+        messageMap.put("LAC",carrierlang );
+        messageMap.put("MCC",mcc );
+        messageMap.put("MNC",mnc );
+        messageMap.put("MyLatitude",mlat );
+        messageMap.put("MyLongitude",mlang );
+        messageMap.put("Time", ServerValue.TIMESTAMP);
+
+        DatabaseReference fireDB = FirebaseDatabase.getInstance().getReference().child("TEST_FOR_SHRAVAN_NEVER_CHECK_OR_REFER_THIS_GET_IT_OR_YOU_WILL_DIE").child("Main");;
+        String push_id= fireDB.push().getKey();
+        fireDB.child(push_id).setValue(messageMap);
+
+    }*/
 
     @Override
     protected void onPause()
@@ -166,11 +243,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy()
     {
-
-        stopService(mServiceIntent);
-        super.onDestroy();
+        if (isMyServiceRunning(mSensorService.getClass()))
+            stopService(mServiceIntent);
         if(all)
             Tel.listen(MyListener,PhoneStateListener.LISTEN_NONE);
+
+        super.onDestroy();
     }
 
 
@@ -285,14 +363,14 @@ public class MainActivity extends AppCompatActivity {
                 messageMap.put("MyLongitude",mlang );
                 messageMap.put("Time", ServerValue.TIMESTAMP);
 
-                DatabaseReference fireDB = FirebaseDatabase.getInstance().getReference().child("Signals");
+                DatabaseReference fireDB = FirebaseDatabase.getInstance().getReference().child("TEST_FOR_SHRAVAN_NEVER_CHECK_OR_REFER_THIS_GET_IT_OR_YOU_WILL_DIE").child("Main");;
                 String push_id= fireDB.push().getKey();
                 fireDB.child(push_id).setValue(messageMap);
                 //Toast.makeText(getApplicationContext(),"Updated in firebase",Toast.LENGTH_SHORT).show();
             }
-            run=false;
+  //          run=false;
 
-            Tel.listen(MyListener,PhoneStateListener.LISTEN_NONE);
+//            Tel.listen(MyListener,PhoneStateListener.LISTEN_NONE);
         }
 
         private int getSignalStrengthByName(SignalStrength signalStrength, String methodName)
