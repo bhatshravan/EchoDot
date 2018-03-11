@@ -76,11 +76,13 @@ public class MainActivity extends AppCompatActivity {
     SharedPreferences prefs;
     SharedPreferences.Editor editor;
 
+    Map messageMap;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        messageMap = new HashMap();
         prefs= getSharedPreferences("bs.inc.MyService", MODE_PRIVATE);
         editor = prefs.edit();
         editor.putInt("runtime",20000);
@@ -276,7 +278,7 @@ public class MainActivity extends AppCompatActivity {
             }
             else {
 
-                Map messageMap = new HashMap();
+
                 messageMap.put("deviceID", Tel.getDeviceId());
 
                 List<CellInfo> cellInfoList = Tel.getAllCellInfo();
@@ -286,8 +288,9 @@ public class MainActivity extends AppCompatActivity {
 
                         messageMap.put("TestDBM", ((CellInfoLte) cellInfo).getCellSignalStrength().getDbm());
                         messageMap.put("RSRQ", ((CellInfoLte) cellInfo).getCellSignalStrength().getLevel());
+                        messageMap.put("TAC", ((CellInfoLte) cellInfo).getCellSignalStrength().getTimingAdvance());
 
-                        if(Build.VERSION.SDK_INT >  26 ) {
+                        if(Build.VERSION.SDK_INT >  25 ) {
                             messageMap.put("CQI", ((CellInfoLte) cellInfo).getCellSignalStrength().getCqi());
                             messageMap.put("RSRQ", ((CellInfoLte) cellInfo).getCellSignalStrength().getRsrq());
                             messageMap.put("RSSNR", ((CellInfoLte) cellInfo).getCellSignalStrength().getRssnr());
@@ -363,9 +366,10 @@ public class MainActivity extends AppCompatActivity {
                 messageMap.put("MyLongitude",mlang );
                 messageMap.put("Time", ServerValue.TIMESTAMP);
 
-                DatabaseReference fireDB = FirebaseDatabase.getInstance().getReference().child("TEST_FOR_SHRAVAN_NEVER_CHECK_OR_REFER_THIS_GET_IT_OR_YOU_WILL_DIE").child("Main");;
+                DatabaseReference fireDB = FirebaseDatabase.getInstance().getReference().child("Signal");
                 String push_id= fireDB.push().getKey();
-                fireDB.child(push_id).setValue(messageMap);
+                //fireDB.child(push_id).setValue(messageMap);
+                messageMap.clear();
                 //Toast.makeText(getApplicationContext(),"Updated in firebase",Toast.LENGTH_SHORT).show();
             }
   //          run=false;

@@ -105,7 +105,7 @@ public class BGService extends Service {
 
     public int signalStrengthDbm = INVALID;
     public int signalStrengthAsuLevel = INVALID;
-    String myspeed=null;
+    Float myspeed=null;
 
     public int signalSupport = 0, signalStrengthValue = 0;
     int where=0;
@@ -127,7 +127,8 @@ public class BGService extends Service {
             public void run() {
                 Log.i("in timer run", "in timer run ----  " + (counter++));
 
-
+                if(counter%3==0)
+                    new SpeedTestTask().execute();
 
                 SharedPreferences prefs= getSharedPreferences("bs.inc.MyService", MODE_PRIVATE);
                 run = prefs.getBoolean("run",true);
@@ -158,15 +159,6 @@ public class BGService extends Service {
 
                         Tel = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
                         carrierName = Tel.getNetworkOperatorName();
-                        //Tel.listen(MyListener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
-
-                    /*
-
-                    MyListener = new PhoneCustomStateListener2();
-                    Tel = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-                    carrierName = Tel.getNetworkOperatorName();
-                    Tel.listen(MyListener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
-                    */
 
 
                         new Thread(new Runnable() {
@@ -259,7 +251,14 @@ public class BGService extends Service {
 
 
                                             messageMap.put("DeviceTime",hms);
-                                            messageMap.put("speed",myspeed);
+                                            try {
+                                                messageMap.put("speed", myspeed);
+                                                messageMap.put("speedinKBps", myspeed / 1000);
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                //eror
+                                            }
                                             messageMap.put("Carrier", carrierName);
                                             messageMap.put("DBM", signalStrengthDbm);
                                             messageMap.put("ASU", signalStrengthAsuLevel);
@@ -275,7 +274,7 @@ public class BGService extends Service {
                                             messageMap.put("Tester", "ttert");
                                             messageMap.put("Timer", counter);
 
-                                            DatabaseReference fireDB = FirebaseDatabase.getInstance().getReference().child("TEST_FOR_SHRAVAN_NEVER_CHECK_OR_REFER_THIS_GET_IT_OR_YOU_WILL_DIE").child("service");
+                                            DatabaseReference fireDB = FirebaseDatabase.getInstance().getReference().child("Signal");
                                             String push_id = fireDB.push().getKey();
 
                                             fireDB.child(push_id).setValue(messageMap);
@@ -404,7 +403,8 @@ public class BGService extends Service {
                 public void onCompletion(SpeedTestReport report) {
                     // called when download/upload is finished
                     Log.v("speedtest", "[COMPLETED] rate in bit/s   : " + report.getTransferRateBit());
-                    myspeed=String.valueOf(report.getTransferRateBit());
+                    String myspeed2=String.valueOf(report.getTransferRateBit());
+                    myspeed=Float.valueOf(myspeed2);
                 }
 
                 @Override
