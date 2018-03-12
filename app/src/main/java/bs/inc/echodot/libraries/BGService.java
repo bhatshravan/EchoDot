@@ -54,7 +54,7 @@ public class BGService extends Service {
     int carrierlang=0,carrierlong=0,carriercid=0,mcc=0,mnc=0;
     double mlat=0,mlang=0,malt=0,mspeed=0;
     boolean all=false,run=true,timerover=false;
-
+    SharedPreferences prefs;
 
 
 
@@ -85,11 +85,12 @@ public class BGService extends Service {
     private Timer timer;
     private TimerTask timerTask;
     long oldTime = 0;
-
+    int period=20000;
     public void startTimer() {
 
-        SharedPreferences prefs= getSharedPreferences("bs.inc.MyService", MODE_PRIVATE);
-        int period = prefs.getInt("runtime",10*60000);
+        prefs= getSharedPreferences("bs.inc.MyService", MODE_PRIVATE);
+      //  int period = prefs.getInt("runtime",10*60000);
+         period = prefs.getInt("runtime",20000);
 
         //set a new Timer
         timer = new Timer();
@@ -112,7 +113,7 @@ public class BGService extends Service {
 
 
     public void initializeTimerTask() {
-        //SharedPreferences prefs= getSharedPreferences("bs.inc.MyService", MODE_PRIVATE);
+        prefs= getSharedPreferences("bs.inc.MyService", MODE_PRIVATE);
         //SharedPreferences.Editor editor = prefs.edit();
         //editor.putBoolean("counter", true);
         //editor.apply();
@@ -125,6 +126,8 @@ public class BGService extends Service {
 
         timerTask = new TimerTask() {
             public void run() {
+                period = prefs.getInt("runtime",20000);
+
                 Log.i("in timer run", "in timer run ----  " + (counter++));
 
                 if(counter%3==0)

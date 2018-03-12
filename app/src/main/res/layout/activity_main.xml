@@ -45,7 +45,9 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
            android:text="FILL MY MAN FILL!!"
-            android:textColor="#FFFFFF"
+            android:textColor="#000000"
+            android:background="#000000"
+            android:onClick="click2"
             android:textSize="25sp"
             android:layout_gravity="center_horizontal"
             />

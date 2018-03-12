@@ -29,7 +29,7 @@
             android:name=".libraries.BGService"
             android:enabled="true"
             />
-
+<activity android:name=".Settings"/>
         <receiver
             android:name=".libraries.SensorRestarterBroadcastReceiver"
             android:enabled="true"

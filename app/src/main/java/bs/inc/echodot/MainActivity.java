@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
         messageMap = new HashMap();
         prefs= getSharedPreferences("bs.inc.MyService", MODE_PRIVATE);
         editor = prefs.edit();
-        editor.putInt("runtime",20000);
+        //editor.putInt("runtime",20000);
 
 
         FirebaseApp.initializeApp(MainActivity.this);
@@ -162,6 +162,12 @@ public class MainActivity extends AppCompatActivity {
         });
 
        // new SpeedTestTask().execute();
+    }
+
+    public void click2(View view)
+    {
+        Intent n = new Intent(MainActivity.this,Settings.class);
+        startActivity(n);
     }
     /*class SpeedTestTask extends AsyncTask<Void, Void, String> {
 
@@ -245,11 +251,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy()
     {
-        if (isMyServiceRunning(mSensorService.getClass()))
-            stopService(mServiceIntent);
-        if(all)
-            Tel.listen(MyListener,PhoneStateListener.LISTEN_NONE);
+        try {
+            if (isMyServiceRunning(mSensorService.getClass()))
+                stopService(mServiceIntent);
+            if (all)
+                Tel.listen(MyListener, PhoneStateListener.LISTEN_NONE);
+        }
+        catch (Exception e){
 
+        }
         super.onDestroy();
     }
 
@@ -368,7 +378,7 @@ public class MainActivity extends AppCompatActivity {
 
                 DatabaseReference fireDB = FirebaseDatabase.getInstance().getReference().child("TEST_FOR_SHRAVAN_NEVER_CHECK_OR_REFER_THIS_GET_IT_OR_YOU_WILL_DIE").child("Main");;
                 String push_id= fireDB.push().getKey();
-                fireDB.child(push_id).setValue(messageMap);
+              //  fireDB.child(push_id).setValue(messageMap);
                 messageMap.clear();
                 //Toast.makeText(getApplicationContext(),"Updated in firebase",Toast.LENGTH_SHORT).show();
             }
