@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="com.github.anastr:speedviewlib-1.1.7">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/speedviewlib-1.1.7.aar/c12831d10c060fa40ef12e0cc4ca5cdc/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/speedviewlib-1.1.7.aar/c12831d10c060fa40ef12e0cc4ca5cdc/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.anastr/speedviewlib/1.1.7/74bba78a3ca31bbfaf669652c72057d479fe7acf/speedviewlib-1.1.7-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

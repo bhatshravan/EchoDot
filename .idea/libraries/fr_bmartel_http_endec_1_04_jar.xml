@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="fr.bmartel:http-endec:1.04@jar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/fr.bmartel/http-endec/1.04/7943e92aae58b2173acee5f5d6eae3481b21b632/http-endec-1.04.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/fr.bmartel/http-endec/1.04/47f71f4c0ae13859f70b05d9014b05b9e0a44aed/http-endec-1.04-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

@@ -10,6 +10,7 @@ import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -22,9 +23,12 @@ import android.telephony.gsm.GsmCellLocation;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.anastr.speedviewlib.SpeedView;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -40,11 +44,18 @@ import java.util.Map;
 
 import bs.inc.echodot.libraries.BGService;
 
+import static bs.inc.echodot.MainActivity.PhoneCustomStateListener.INVALID;
+
 public class MainActivity extends AppCompatActivity {
 
     Intent mServiceIntent;
     private BGService mSensorService;
     Context ctx;
+    private MaterialDialog materialDialog;
+    public int signalStrengthDbm = INVALID;
+    public int signalStrengthAsuLevel = INVALID;
+
+
     public Context getCtx() {
         return ctx;
     }
@@ -63,7 +74,16 @@ public class MainActivity extends AppCompatActivity {
 
     private FusedLocationProviderClient fusedLocationProviderClient;
     String carrierConnenctionType="";
+
+    //       "\nCell Tower Type: " + carrierConnenctionType +
+    //       "\nCell CID: " + carriercid +
+    //       "\nCell Latitude: " + carrierlang +
+    //       "\nMCC: " + mcc +
+    //       "\nMNC: " + mnc +
+
+
     TextView currentSignalView;
+    Button knowBtn;
     int mSignalStrength=0;
     String[] PERMISSIONS = {Manifest.permission.READ_PHONE_STATE, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_SMS, Manifest.permission.INTERNET};
     TelephonyManager Tel,telephonyManager;
@@ -115,6 +135,13 @@ public class MainActivity extends AppCompatActivity {
 
             currentSignalView = findViewById(R.id.textVIew);
             speedView = (SpeedView) findViewById(R.id.speedView);
+            knowBtn = (Button)findViewById(R.id.btnModal);
+            knowBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    showCustomDialog();
+                }
+            });
 
             speedView.setMaxSpeed(140);
             speedView.speedTo(0);
@@ -163,6 +190,34 @@ public class MainActivity extends AppCompatActivity {
 
        // new SpeedTestTask().execute();
     }
+
+    private void showCustomDialog() {
+        materialDialog = new MaterialDialog.Builder(MainActivity.this)
+                .title("More information")
+                .icon(getResources().getDrawable(R.mipmap.ic_launcher))
+                .content("Carrier: " + carrierName +
+                        "\nDBM: " + String.valueOf(signalStrengthDbm) +
+                        "\nASU: " + String.valueOf(signalStrengthAsuLevel) +
+                        //    \"\\nTest DBM: \"+ dbm+\n" +
+                        "\nNetwork type: " + carrierNetwork +
+                        "\nCell Tower Type: " + carrierConnenctionType +
+                        "\nCell CID: " + carriercid +
+                        "\nCell Latitude: " + carrierlang +
+                        "\nMCC: " + mcc +
+                        "\nMNC: " + mnc +
+                        "\nMyLatitude: " + mlat +
+                        "\nMyLongitute: " + mlang )
+                .positiveText("OK")
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        //Toast.makeText(getApplicationContext(), "hehehe", Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+                    }
+                })
+                .show();
+    }
+
 
     public void click2(View view)
     {
@@ -267,8 +322,8 @@ public class MainActivity extends AppCompatActivity {
     class PhoneCustomStateListener extends PhoneStateListener {
         public static final int INVALID = Integer.MAX_VALUE;
 
-        public int signalStrengthDbm = INVALID;
-        public int signalStrengthAsuLevel = INVALID;
+        //  public int signalStrengthDbm = INVALID;
+        //  public int signalStrengthAsuLevel = INVALID;
 
         public int signalSupport = 0, signalStrengthValue = 0;
         int where=0;
@@ -351,14 +406,14 @@ public class MainActivity extends AppCompatActivity {
 
                 currentSignalView.setText("Carrier: " + carrierName +
                         "\nDBM: " + String.valueOf(signalStrengthDbm) +
-                        "\nASU:" + String.valueOf(signalStrengthAsuLevel) +
+                        "\nASU: " + String.valueOf(signalStrengthAsuLevel) +
                         //    "\nTest DBM: "+ dbm+
                         "\nNetwork type: " + carrierNetwork +
-                        "\nCell Tower Type:" + carrierConnenctionType +
-                        "\nCell CID: " + carriercid +
-                        "\nCell Latitude: " + carrierlang +
-                        "\nMCC: " + mcc +
-                        "\nMNC: " + mnc +
+                 //       "\nCell Tower Type: " + carrierConnenctionType +
+                 //       "\nCell CID: " + carriercid +
+                 //       "\nCell Latitude: " + carrierlang +
+                 //       "\nMCC: " + mcc +
+                 //       "\nMNC: " + mnc +
                         "\nMyLatitude: " + mlat +
                         "\nMyLongitute: " + mlang
                 );
