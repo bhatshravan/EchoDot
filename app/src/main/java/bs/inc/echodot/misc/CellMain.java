@@ -22,6 +22,9 @@ public class CellMain {
     @SerializedName("mnc")
     @Expose
     private Integer mnc;
+    @SerializedName("id")
+    @Expose
+    private Integer id;
     @SerializedName("cells")
     @Expose
     private List<Cell> cells = null;
@@ -77,4 +80,11 @@ public class CellMain {
         this.address = address;
     }
 
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 }

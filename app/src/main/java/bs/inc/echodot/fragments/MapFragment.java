@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.telephony.TelephonyManager;
 import android.telephony.gsm.GsmCellLocation;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -78,25 +79,31 @@ public class MapFragment extends Fragment {
         TelephonyManager Tel = (TelephonyManager) getActivity().getSystemService(Context.TELEPHONY_SERVICE);
         GsmCellLocation cellLocation = (GsmCellLocation) Tel.getCellLocation();
         String networkOperator = Tel.getNetworkOperator();
-        carriercid = cellLocation.getCid();
-        carrierlang = cellLocation.getLac() & 0xffff;
-        mcc = Integer.parseInt(networkOperator.substring(0, 3));
-        mnc = Integer.parseInt(networkOperator.substring(3));
+        if (!TextUtils.isEmpty(networkOperator)) {
+            carriercid = cellLocation.getCid();
+            carrierlang = cellLocation.getLac() & 0xffff;
+            mcc = Integer.parseInt(networkOperator.substring(0, 3));
+            mnc = Integer.parseInt(networkOperator.substring(3));
 
 
-        mMapView = (MapView) rootView.findViewById(R.id.mapView);
-        mMapView.onCreate(savedInstanceState);
 
-        mMapView.onResume(); // needed to get the map to display immediately
+            mMapView = (MapView) rootView.findViewById(R.id.mapView);
+            mMapView.onCreate(savedInstanceState);
 
-        try {
-            MapsInitializer.initialize(getActivity().getApplicationContext());
-        } catch (Exception e) {
-            e.printStackTrace();
+            mMapView.onResume(); // needed to get the map to display immediately
+
+            try {
+                MapsInitializer.initialize(getActivity().getApplicationContext());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            displayInMap();
         }
-
-        displayInMap();
-
+        else{
+            Toast.makeText(getActivity(),"No signal",Toast.LENGTH_SHORT).show();
+            progress.dismiss();
+        }
         return rootView;
     }
 
@@ -140,6 +147,7 @@ public class MapFragment extends Fragment {
         cellmain.setRadio("gsm");
         cellmain.setToken("9226357cb8dac2");
         cellmain.setAddress(1);
+        cellmain.setId(918210281);
 
         List<Cell> cellList = new ArrayList();
         Cell cell=new Cell();
@@ -192,7 +200,7 @@ public class MapFragment extends Fragment {
                             googleMap.addMarker(new MarkerOptions().position(sydney).title("Marker Title").snippet("Marker Description"));
 
                             // For zooming automatically to the location of the marker
-                            CameraPosition cameraPosition = new CameraPosition.Builder().target(sydney).zoom(12).build();
+                            CameraPosition cameraPosition = new CameraPosition.Builder().target(sydney).zoom(17).build();
                             googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
                         }
                     });
@@ -204,7 +212,7 @@ public class MapFragment extends Fragment {
                 catch (Exception e)
                 {
                     Toast.makeText(getActivity(),"idiot",Toast.LENGTH_SHORT).show();
-                    Log.e("meesponse ", "idiot");
+                    Log.e("meesponse ", "idiot: "+e.toString());
                 }
                 Log.e("Volley:Response ", ""+response.toString());
             }

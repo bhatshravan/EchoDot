@@ -263,14 +263,14 @@ public class DisplayMain extends Fragment {
             super.onSignalStrengthsChanged(signalStrength);
 
 
-            if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_PHONE_STATE)
+            /*if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_PHONE_STATE)
                     != PackageManager.PERMISSION_GRANTED
                     || ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
                     || ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                     & run) {
                 ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_PHONE_STATE,Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, 1);
             }
-            else {
+            else {*/
 
 
                 messageMap.put("deviceID", Tel.getDeviceId());
@@ -381,7 +381,7 @@ public class DisplayMain extends Fragment {
             {
                 return INVALID;
             }
-        }
+        //}
     }
 
     //Git hub integration test
