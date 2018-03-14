@@ -24,7 +24,9 @@ public class SplashScreen extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-
+        YoYo.with(Techniques.BounceIn)
+                .duration(2000)
+                .playOn(findViewById(R.id.imgLogo));
         new Handler().postDelayed(new Runnable() {
 
             /*
@@ -44,9 +46,7 @@ public class SplashScreen extends Activity {
                     recreate();
                 }
                 else {
-                    YoYo.with(Techniques.BounceIn)
-                            .duration(1500)
-                            .playOn(findViewById(R.id.imgLogo));
+
                     Intent i = new Intent(SplashScreen.this, MainActivity.class);
                     startActivity(i);
 

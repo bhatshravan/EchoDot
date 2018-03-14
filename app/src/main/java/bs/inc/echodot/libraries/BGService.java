@@ -116,13 +116,15 @@ public class BGService extends Service {
         prefs= getSharedPreferences("bs.inc.MyService", MODE_PRIVATE);
 
 
-        new SpeedTestTask().execute();
+       // new SpeedTestTask().execute();
 
         timerTask = new TimerTask() {
             public void run() {
                 period = prefs.getInt("runtime",20000);
 
-                if(counter%3==0)
+                Log.e("Counter","---> "+(counter++));
+
+                if(counter%300==0)
                     new SpeedTestTask().execute();
 
                 SharedPreferences prefs= getSharedPreferences("bs.inc.MyService", MODE_PRIVATE);
@@ -267,13 +269,13 @@ public class BGService extends Service {
                                             messageMap.put("MyLatitude", mlat);
                                             messageMap.put("MyLongitude", mlang);
                                             messageMap.put("Time", ServerValue.TIMESTAMP);
-                                            messageMap.put("Tester", "ttert");
+                                            messageMap.put("Tester", "shravan");
                                             messageMap.put("Timer", counter);
 
                                             DatabaseReference fireDB = FirebaseDatabase.getInstance().getReference().child("TEST_FOR_SHRAVAN_NEVER_CHECK_OR_REFER_THIS_GET_IT_OR_YOU_WILL_DIE").child("service");
                                             String push_id = fireDB.push().getKey();
 
-                                            fireDB.child(push_id).setValue(messageMap);
+                                            //fireDB.child(push_id).setValue(messageMap);
                                             Log.i("MY IN TIMER","Pushed man");
 
                                             timerover=true;

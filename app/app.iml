@@ -17,7 +17,7 @@
         <option name="ALLOW_USER_CONFIGURATION" value="false" />
         <option name="MANIFEST_FILE_RELATIVE_PATH" value="/src/main/AndroidManifest.xml" />
         <option name="RES_FOLDER_RELATIVE_PATH" value="/src/main/res" />
-        <option name="RES_FOLDERS_RELATIVE_PATH" value="file://$MODULE_DIR$/src/main/res" />
+        <option name="RES_FOLDERS_RELATIVE_PATH" value="file://$MODULE_DIR$/src/main/res;file://$MODULE_DIR$/src/debug/res" />
         <option name="ASSETS_FOLDER_RELATIVE_PATH" value="/src/main/assets" />
       </configuration>
     </facet>
@@ -124,11 +124,13 @@
     <orderEntry type="library" name="com.github.bumptech.glide:disklrucache:4.6.1@jar" level="project" />
     <orderEntry type="library" scope="TEST" name="com.squareup:javawriter:2.1.1@jar" level="project" />
     <orderEntry type="library" name="com.google.android.gms:play-services-basement-license-11.8.0" level="project" />
+    <orderEntry type="library" name="com.android.volley:volley-1.1.0" level="project" />
     <orderEntry type="library" name="com.android.support.constraint:constraint-layout-solver:1.0.2@jar" level="project" />
     <orderEntry type="library" name="com.afollestad.material-dialogs:core-0.9.6.0" level="project" />
     <orderEntry type="library" name="com.android.support.constraint:constraint-layout-1.0.2" level="project" />
     <orderEntry type="library" name="me.zhanghai.android.materialprogressbar:library-1.4.2" level="project" />
     <orderEntry type="library" name="com.github.bumptech.glide:glide-4.6.1" level="project" />
+    <orderEntry type="library" name="com.google.code.gson:gson:2.8.2@jar" level="project" />
     <orderEntry type="library" scope="TEST" name="com.android.support.test:runner-1.0.1" level="project" />
     <orderEntry type="library" name="android.arch.lifecycle:runtime-1.0.3" level="project" />
     <orderEntry type="library" scope="TEST" name="com.google.code.findbugs:jsr305:2.0.1@jar" level="project" />
@@ -163,11 +165,13 @@
     <orderEntry type="library" scope="TEST" name="javax.inject:javax.inject:1@jar" level="project" />
     <orderEntry type="library" name="fr.bmartel:http-endec:1.04@jar" level="project" />
     <orderEntry type="library" name="com.android.support:recyclerview-v7-27.0.1" level="project" />
+    <orderEntry type="library" name="com.google.android.gms:play-services-maps-license-11.8.0" level="project" />
     <orderEntry type="library" name="commons-net:commons-net:3.6@jar" level="project" />
     <orderEntry type="library" name="com.google.firebase:firebase-analytics-11.8.0" level="project" />
     <orderEntry type="library" scope="TEST" name="com.android.support.test:rules-1.0.1" level="project" />
     <orderEntry type="library" name="com.google.firebase:firebase-database-connection-11.8.0" level="project" />
     <orderEntry type="library" name="android.arch.lifecycle:common:1.0.3@jar" level="project" />
+    <orderEntry type="library" name="com.google.android.gms:play-services-maps-11.8.0" level="project" />
     <orderEntry type="library" name="com.google.firebase:firebase-database-license-11.8.0" level="project" />
     <orderEntry type="library" scope="TEST" name="org.hamcrest:hamcrest-library:1.3@jar" level="project" />
     <orderEntry type="library" name="fr.bmartel:jspeedtest:1.31.3@jar" level="project" />

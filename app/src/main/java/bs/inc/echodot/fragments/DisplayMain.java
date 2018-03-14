@@ -21,6 +21,7 @@ import android.telephony.SignalStrength;
 import android.telephony.TelephonyManager;
 import android.telephony.gsm.GsmCellLocation;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +31,14 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.github.anastr.speedviewlib.SpeedView;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -37,13 +46,24 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import bs.inc.echodot.MapsActivity;
 import bs.inc.echodot.R;
+import bs.inc.echodot.Settings;
 import bs.inc.echodot.libraries.BGService;
+import bs.inc.echodot.misc.Cell;
+import bs.inc.echodot.misc.CellMain;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -73,7 +93,7 @@ public class DisplayMain extends Fragment {
     TelephonyManager Tel,telephonyManager;
     PhoneCustomStateListener MyListener;
     String carrierName="",carrierNetwork="";
-    int carrierlang=0,carrierlong=0,carriercid=0,mcc=0,mnc=0;
+    int carrierlang=0,carriercid=0,mcc=0,mnc=0;
     double mlat=0,mlang=0,malt=0,mspeed=0;
     SpeedView speedView;
     boolean all=false,run=true;
@@ -123,6 +143,10 @@ public class DisplayMain extends Fragment {
             });
 
             currentSignalView = view.findViewById(R.id.textVIew);
+            YoYo.with(Techniques.FadeIn)
+                    .duration(2000)
+                    .playOn(currentSignalView);
+
             speedView = (SpeedView) view.findViewById(R.id.speedView);
             knowBtn = (Button) view.findViewById(R.id.btnModal);
             knowBtn.setOnClickListener(new View.OnClickListener() {
@@ -150,6 +174,13 @@ public class DisplayMain extends Fragment {
                 }
             }, 3000);
 
+            Button mapButton= view.findViewById(R.id.btnMap);
+            mapButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    displayInMap();
+                }
+            });
         }
 
         mSensorService = new BGService(getActivity());
@@ -159,6 +190,13 @@ public class DisplayMain extends Fragment {
             editor.apply();
             getActivity().startService(mServiceIntent);
         }
+
+        speedView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().startActivity(new Intent(getActivity(), Settings.class));
+            }
+        });
 
 
         currentSignalView.setOnClickListener(new View.OnClickListener() {
@@ -187,8 +225,8 @@ public class DisplayMain extends Fragment {
                         "\nASU: " + String.valueOf(signalStrengthAsuLevel) +
                         "\nNetwork type: " + carrierNetwork +
                         "\nCell Tower Type: " + carrierConnenctionType +
-                        "\nCell CID: " + carriercid +
-                        "\nCell Latitude: " + carrierlang +
+                        "\nCID: " + carriercid +
+                        "\nLAC: " + carrierlang +
                         "\nMCC: " + mcc +
                         "\nMNC: " + mnc +
                         "\nMyLatitude: " + mlat +
@@ -438,4 +476,82 @@ public class DisplayMain extends Fragment {
         super.onDestroy();
     }
 
+    JSONObject jo2;
+    public void displayInMap()
+    {
+        String url= "https://ap1.unwiredlabs.com/v2/process.php";
+
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        Gson gson = new Gson();
+
+        CellMain cellmain= new CellMain();
+
+        cellmain.setMcc(mcc);
+        cellmain.setMnc(mnc);
+        cellmain.setRadio("gsm");
+        cellmain.setToken("9226357cb8dac2");
+        cellmain.setAddress(1);
+
+        List<Cell> cellList = new ArrayList();
+        Cell cell=new Cell();
+
+        cell.setCid(carriercid);
+        cell.setLac(carrierlang);
+        cell.setPsc(1);
+
+        cellList.add(cell);
+        cellmain.setCells(cellList);
+
+        try {
+            JsonObject gson2 = new JsonParser().parse(gson.toJson(cellmain)).getAsJsonObject();
+            jo2 = new JSONObject(gson2.toString());
+        }
+        catch (JSONException e)
+        {
+            Log.e("MYAPP", "unexpected JSON exception", e);
+            Toast.makeText(getActivity(),"Error loading map",Toast.LENGTH_SHORT).show();
+        }
+
+        /*Uri gmmIntentUri = Uri.parse("geo:12.904157,77.548312");
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+        mapIntent.setPackage("com.google.android.apps.maps");
+        startActivity(mapIntent);*/
+
+        JsonObjectRequest jsonObjectRequest= new JsonObjectRequest(Request.Method.POST, url, jo2, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    String status= response.getString("status");
+                    if(status.equals("error"))
+                    {
+                        Toast.makeText(getActivity(),"Sorry there was an error",Toast.LENGTH_SHORT).show();
+                    }
+                    double lat=response.getDouble("lat");
+                    double longi= response.getDouble("lon");
+                    String address= response.getString("address");
+
+
+
+                    Intent intent = new Intent(getActivity(), MapsActivity.class);
+                    intent.putExtra("lat", lat);
+                    intent.putExtra("longi", longi);
+                    startActivity(intent);
+
+
+                }
+                catch (Exception e)
+                {
+                    Toast.makeText(getActivity(),"idiot",Toast.LENGTH_SHORT).show();
+                    Log.e("meesponse ", "idiot");
+                }
+                Log.e("Volley:Response ", ""+response.toString());
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("Volley:ERROR ", error.getMessage().toString());
+            }
+        });
+        requestQueue.add(jsonObjectRequest);
+    }
 }

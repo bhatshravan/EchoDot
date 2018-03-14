@@ -63,6 +63,19 @@
             android:text="Know more"
             android:textColor="#101010" />
 
-
+        <Button
+            android:id="@+id/btnMap"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/know_more_btn"
+            android:fontFamily="@font/montserrat"
+            android:paddingLeft="18dp"
+            android:paddingRight="18dp"
+            android:onClick="display"
+            android:text="View Map"
+            android:textColor="#101010" />
     </LinearLayout>
 </ScrollView>
