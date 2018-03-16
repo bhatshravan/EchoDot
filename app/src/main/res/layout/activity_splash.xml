@@ -6,6 +6,8 @@
 
     <ImageView
         android:id="@+id/imgLogo"
+        android:layout_marginLeft="100dp"
+        android:layout_marginRight="100dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"

@@ -12,7 +12,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:orientation="vertical"
-        android:paddingTop="40dp"
+        android:paddingTop="30dp"
         android:layout_gravity="center"
         android:background="#ffffff"
         android:layout_height="match_parent">
@@ -74,6 +74,7 @@
             android:fontFamily="@font/montserrat"
             android:paddingLeft="18dp"
             android:paddingRight="18dp"
+            android:visibility="gone"
             android:onClick="display"
             android:text="View Map"
             android:textColor="#101010" />

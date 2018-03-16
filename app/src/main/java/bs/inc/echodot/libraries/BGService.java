@@ -89,8 +89,8 @@ public class BGService extends Service {
     public void startTimer() {
 
         prefs= getSharedPreferences("bs.inc.MyService", MODE_PRIVATE);
-      //  int period = prefs.getInt("runtime",10*60000);
-         period = prefs.getInt("runtime",20000);
+        //  int period = prefs.getInt("runtime",10*60000);
+        period = prefs.getInt("runtime",20000);
 
         //set a new Timer
         timer = new Timer();
@@ -116,15 +116,16 @@ public class BGService extends Service {
         prefs= getSharedPreferences("bs.inc.MyService", MODE_PRIVATE);
 
 
-       // new SpeedTestTask().execute();
+         new SpeedTestTask().execute();
 
         timerTask = new TimerTask() {
             public void run() {
-                period = prefs.getInt("runtime",20000);
+                period = prefs.getInt("runtime",5000);
 
+                //period=10000;
                 Log.e("Counter","---> "+(counter++));
 
-                if(counter%300==0)
+                if(counter%20==0)
                     new SpeedTestTask().execute();
 
                 SharedPreferences prefs= getSharedPreferences("bs.inc.MyService", MODE_PRIVATE);
@@ -137,7 +138,7 @@ public class BGService extends Service {
                         || ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                         ) {
                 }
-                else if(!run || counter>10) {
+                else if(!run) {
                     stopService(new Intent(getApplicationContext(),BGService.class));
                 }
                 else{
@@ -251,7 +252,7 @@ public class BGService extends Service {
                                             messageMap.put("DeviceTime",hms);
                                             try {
                                                 messageMap.put("speed", myspeed);
-                                                messageMap.put("speedinKBps", myspeed / 1000);
+                                                messageMap.put("speedinKBps", String.valueOf(Math.ceil(myspeed / 10000)));
                                             }
                                             catch (Exception e)
                                             {
@@ -270,12 +271,12 @@ public class BGService extends Service {
                                             messageMap.put("MyLongitude", mlang);
                                             messageMap.put("Time", ServerValue.TIMESTAMP);
                                             messageMap.put("Tester", "shravan");
-                                            messageMap.put("Timer", counter);
+                                            //messageMap.put("Timer", counter);
 
-                                            DatabaseReference fireDB = FirebaseDatabase.getInstance().getReference().child("TEST_FOR_SHRAVAN_NEVER_CHECK_OR_REFER_THIS_GET_IT_OR_YOU_WILL_DIE").child("service");
+                                            DatabaseReference fireDB = FirebaseDatabase.getInstance().getReference().child("Signals");
                                             String push_id = fireDB.push().getKey();
 
-                                            //fireDB.child(push_id).setValue(messageMap);
+                                            fireDB.child(push_id).setValue(messageMap);
                                             Log.i("MY IN TIMER","Pushed man");
 
                                             timerover=true;
