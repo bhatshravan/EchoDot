@@ -11,8 +11,40 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
-    buildTypes {
-        release {
+    flavorDimensions "stage", "mode"
+
+    productFlavors {
+        // When building a variant that uses this flavor, the following configurations
+        // override those in the defaultConfig block.
+        dev {
+
+            dimension "stage"
+
+            // To avoid using legacy multidex when building from the command line,
+            // set minSdkVersion to 21 or higher. When using Android Studio 2.3 or higher,
+            // the build automatically avoids legacy multidex when deploying to a device running
+            // API level 21 or higher—regardless of what you set as your minSdkVersion.
+            minSdkVersion 21
+            resConfigs "en", "xxhdpi"
+
+        }
+
+        prod {
+
+            dimension "mode"
+
+            // If you've configured the defaultConfig block for the release version of
+            // your app, you can leave this block empty and Gradle uses configurations in
+            // the defaultConfig block instead. You still need to create this flavor.
+            // Otherwise, all variants use the "dev" flavor configurations.
+        }
+    }
+        buildTypes {
+            debug {
+                ext.enableCrashlytics = false
+            }
+
+            release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -48,6 +80,9 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.6.1'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.6.1'
 
+    compile 'com.google.maps.android:android-maps-utils:0.5'
+
+    compile 'com.mikhaellopez:circularfillableloaders:1.2.0'
     compile 'com.android.volley:volley:1.1.0'
     compile 'com.google.code.gson:gson:2.8.2'
 }

@@ -16,11 +16,14 @@ import android.telephony.TelephonyManager;
 import android.telephony.gsm.GsmCellLocation;
 import android.text.TextUtils;
 import android.view.MenuItem;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import bs.inc.echodot.fragments.DisplayMain;
 import bs.inc.echodot.fragments.MapFragment;
 import bs.inc.echodot.fragments.SettingsFragment;
+import bs.inc.echodot.fragments.WEBSS;
 import bs.inc.echodot.libraries.BGService;
 
 public class MainActivity extends AppCompatActivity {
@@ -32,7 +35,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         setContentView(R.layout.activity_main);
+
+        /*View decorView = getWindow().getDecorView();
+        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_FULLSCREEN;
+        decorView.setSystemUiVisibility(uiOptions);*/
 
         loadFragment(new DisplayMain());
 
@@ -41,11 +52,8 @@ public class MainActivity extends AppCompatActivity {
 
         prefs= getSharedPreferences("bs.inc.MyService", MODE_PRIVATE);
         editor = prefs.edit();
-
-
         editor.putBoolean("run", true);
         editor.apply();
-
 
         startService(new Intent(MainActivity.this, BGService.class));
     }
@@ -61,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
                     loadFragment(new DisplayMain());
                     return true;
                 //case R.id.navigation_chatbot:
-                  //  return true;
+                //  return true;
                 case R.id.navigation_maps:
                     if (ContextCompat.checkSelfPermission(MainActivity.this, android.Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED);
                     TelephonyManager Tel = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
@@ -77,10 +85,22 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.navigation_settings:
                     loadFragment(new SettingsFragment());
                     return true;
+
+                case R.id.navigation_chatbot:
+                    Fragment fr = new WEBSS();
+                    Bundle ar = new Bundle();
+                    ar.putString("url", "https://console.dialogflow.com/api-client/demo/embedded/8670b99d-5452-4eb3-939c-1480b1ad4b92");
+                    fr.setArguments(ar);
+                    FragmentManager fragmentManager = getFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.replace(R.id.container_body, fr,"home");
+                    fragmentTransaction.commit();
+                    return true;
             }
             return false;
         }
     };
+
 
 
     public void loadFragment(Fragment fr)

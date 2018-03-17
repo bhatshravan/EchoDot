@@ -22,7 +22,8 @@
             android:layout_gravity="bottom"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             android:layout_height="wrap_content"
-            android:background="?android:attr/windowBackground"
+            android:background="#000000"
+
             app:menu="@menu/navigation" />
     </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

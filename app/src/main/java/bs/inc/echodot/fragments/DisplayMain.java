@@ -7,7 +7,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -49,6 +52,7 @@ import com.google.firebase.database.ServerValue;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.mikhaellopez.circularfillableloaders.CircularFillableLoaders;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -100,6 +104,8 @@ public class DisplayMain extends Fragment {
     SharedPreferences.Editor editor;
     Map messageMap;
 
+    float percentDBM=0;
+    CircularFillableLoaders circlefii;
 
     public DisplayMain() {
     }
@@ -113,6 +119,8 @@ public class DisplayMain extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_main, container, false);
+
+         circlefii= view.findViewById(R.id.circularfill);
 
         messageMap = new HashMap();
         //prefs= getActivity().getSharedPreferences("bs.inc.MyService", MODE_PRIVATE);
@@ -250,6 +258,7 @@ public class DisplayMain extends Fragment {
         }
         return false;
     }
+    String wifilevel="";
 
     class PhoneCustomStateListener extends PhoneStateListener {
         public static final int INVALID = Integer.MAX_VALUE;
@@ -295,10 +304,25 @@ public class DisplayMain extends Fragment {
                     }
 
                     signalStrengthDbm = getSignalStrengthByName(signalStrength, "getDbm");
-                    speedView.speedTo(Math.abs(signalStrengthDbm));
+                    //speedView.speedTo(Math.abs(signalStrengthDbm));
 
 
                     signalStrengthAsuLevel = getSignalStrengthByName(signalStrength, "getAsuLevel");
+
+
+                    percentDBM= ((float)signalStrengthAsuLevel)*100 / 31;
+                    circlefii.setProgress((int)percentDBM);
+
+                    if(percentDBM<30)
+                        circlefii.setColor(Color.RED);
+
+                    else if(percentDBM<70)
+                        circlefii.setColor(Color.GREEN);
+
+                    else
+                        circlefii.setColor(Color.BLUE);
+
+
 
                     if (signalStrength.isGsm()) {
                         where = 1;
@@ -334,11 +358,21 @@ public class DisplayMain extends Fragment {
                             }
                         }
                     });
+                    WifiManager wifiManager = (WifiManager) getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+                    int numberOfLevels = 5;
+                    WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+                    int level = WifiManager.calculateSignalLevel(wifiInfo.getRssi(), numberOfLevels);
 
+                    if(level!=0)
+                         wifilevel=String.valueOf(level*20) +"%";
+                    else
+                        wifilevel="-";
                     currentSignalView.setText("Carrier: " + carrierName +
-                            "\nDBM: " + String.valueOf(signalStrengthDbm) +
-                            "\nASU: " + String.valueOf(signalStrengthAsuLevel) +
-                            //    "\nTest DBM: "+ dbm+
+                    //        "\nDBM: " + String.valueOf(signalStrengthDbm) +
+                    //                "\nASU: " + String.valueOf(signalStrengthAsuLevel) +
+                                    "\nStrength: " + String.valueOf((int)percentDBM) +"%"+
+                                    "\nWiFi: " + wifilevel +
+                                    //    "\nTest DBM: "+ dbm+
                             "\nNetwork type: " + carrierNetwork
                             //       "\nCell Tower Type: " + carrierConnenctionType +
                             //       "\nCell CID: " + carriercid +
@@ -370,9 +404,12 @@ public class DisplayMain extends Fragment {
                     //Toast.makeText(getApplicationContext(),"Updated in firebase",Toast.LENGTH_SHORT).show();
                 } catch (Exception e) {
                     Log.e("Error","Error on displayMain "+e.toString());
+                    Tel.listen(MyListener, PhoneStateListener.LISTEN_NONE);
+
                 }
             }
         }
+
 
         private int getSignalStrengthByName(SignalStrength signalStrength, String methodName)
         {

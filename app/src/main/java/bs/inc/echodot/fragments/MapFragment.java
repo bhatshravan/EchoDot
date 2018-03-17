@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -35,12 +36,14 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.maps.android.ui.IconGenerator;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import bs.inc.echodot.R;
 import bs.inc.echodot.misc.Cell;
@@ -136,9 +139,12 @@ public class MapFragment extends Fragment {
 
     double lat,longi;
     JSONObject jo2;
+    String tokens[]={"9226357cb8dac2","96983ae6ba78d0","904d9acad7f279"};
+
     public void displayInMap()
     {
         String url= "https://ap1.unwiredlabs.com/v2/process.php";
+        Random rand= new Random();
 
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
         Gson gson = new Gson();
@@ -148,7 +154,7 @@ public class MapFragment extends Fragment {
         cellmain.setMcc(mcc);
         cellmain.setMnc(mnc);
         cellmain.setRadio("gsm");
-        cellmain.setToken("9226357cb8dac2");
+        cellmain.setToken(tokens[0 + (rand.nextInt(2))]);
         cellmain.setAddress(1);
         cellmain.setId(918210281);
 
@@ -192,16 +198,23 @@ public class MapFragment extends Fragment {
                         public void onMapReady(GoogleMap mMap) {
                             googleMap = mMap;
 
+
+
                             // For showing a move to my location button
                             if (ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.READ_PHONE_STATE)
                                     != PackageManager.PERMISSION_GRANTED);
 
                             googleMap.setMyLocationEnabled(true);
-                            googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+                            googleMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
 
                             // For dropping a marker at a point on the Map
                             LatLng sydney = new LatLng(lat, longi);
                             //googleMap.addMarker(new MarkerOptions().position(sydney).title("Marker Title").snippet("Marker Description"));
+
+                            IconGenerator iconFactory = new IconGenerator(getActivity());
+                            iconFactory.setColor(Color.CYAN);
+                            addIcon(iconFactory, "Cell tower", sydney);
+
 
                             int height = 100;
                             int width = 100;
@@ -212,12 +225,12 @@ public class MapFragment extends Fragment {
 
 
                             MarkerOptions marker= new MarkerOptions().position(sydney).title("Cell tower");
-                            marker.icon(BitmapDescriptorFactory.fromBitmap(smallMarker));
-                            googleMap.addMarker(marker);
+                            //marker.icon(BitmapDescriptorFactory.fromBitmap(smallMarker));
+                            //googleMap.addMarker(marker);
 
 
                             // For zooming automatically to the location of the marker
-                            CameraPosition cameraPosition = new CameraPosition.Builder().target(sydney).zoom(17).build();
+                            CameraPosition cameraPosition = new CameraPosition.Builder().target(sydney).zoom(16).build();
                             googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
                         }
                     });
@@ -226,7 +239,7 @@ public class MapFragment extends Fragment {
                 }
                 catch (Exception e)
                 {
-                    Toast.makeText(getActivity(),"idiot",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(),"Error",Toast.LENGTH_SHORT).show();
                     Log.e("meesponse ", "idiot: "+e.toString());
                 }
                 Log.e("Volley:Response ", ""+response.toString());
@@ -238,5 +251,14 @@ public class MapFragment extends Fragment {
             }
         });
         requestQueue.add(jsonObjectRequest);
+    }
+
+    private void addIcon(IconGenerator iconFactory, CharSequence text, LatLng position) {
+        MarkerOptions markerOptions = new MarkerOptions().
+                icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon(text))).
+                position(position).
+                anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV());
+
+        googleMap.addMarker(markerOptions);
     }
 }
